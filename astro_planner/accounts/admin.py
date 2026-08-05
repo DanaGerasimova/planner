@@ -1,5 +1,6 @@
 from django.contrib import admin
 from accounts.models import AstroUser, AstroUserProfile
+from accounts.forms import AstroUserForm
 
 
 class AstroUserProfileInline(admin.StackedInline):
@@ -11,19 +12,31 @@ class AstroUserProfileInline(admin.StackedInline):
 
 class AstroUserAdmin(admin.ModelAdmin):
     inlines = [AstroUserProfileInline]
-    fields = ['cell_phone', 'password', 'email', 'first_name', 'last_name',
-    'date_joined', 'is_active', 'is_staff', 'is_superuser', 'preffered_lang',
-    'date_of_birth']
-    readonly_fields = ['date_joined', 'last_login']
+    form = AstroUserForm
 
-    def save_model(self, request, obj, form, change):
-        if not change:
-            obj.set_password(obj.password)
-     
-        super().save_model(request, obj, form, change)
+    def get_fields(self, request, obj):
+        fields_1 = ['cell_phone', 'password']
+        fields_2 = ['email', 'first_name', 'last_name']
+        fields_3 = [
+            'is_active',
+            'is_staff',
+            'is_superuser',
+            'preffered_lang',
+            'date_of_birth'
+        ]
+        if obj is None:
+            return fields_1 + ['password_repeated'] + fields_2 + fields_3
+        else:
+            return fields_1 + fields_2 + ['date_joined'] + fields_3 + ['last_login']
 
+    def get_readonly_fields(self, request, obj):
+        return ['date_joined', 'last_login', 'password'] if obj is not None else []
+
+    def save_formset(self, request, form, formset, change):
+        super().save_formset(request, form, formset, change)
         if not change:
-            AstroUserProfile.objects.create(user=obj)
+            if not hasattr(form.instance, 'astrouserprofile'):
+                AstroUserProfile.objects.create(user=form.instance)
 
 
 admin.site.register(AstroUser, AstroUserAdmin)
