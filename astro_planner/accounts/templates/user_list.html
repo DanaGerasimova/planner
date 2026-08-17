@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <table>
+            <tr>
+                <th align="left">First name</th>
+                <th align="left">Last name</th>
+                <th align="left">Email</th>
+            </tr>
+            {% for user in users %}
+                <tr>
+                    <td><a href="{% url 'user_permissions_list' user_id=user.id %}">{{ user.first_name }}</a></td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+            {% empty %}
+                <p>No users found</p>
+            {% endfor %}
+        </table>
+    </body>
+</html>

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from accounts.models import AstroUser, AstroUserProfile
 from accounts.forms import AstroUserForm
+from django.contrib.auth.models import Permission
 
 
 class AstroUserProfileInline(admin.StackedInline):
@@ -27,7 +28,9 @@ class AstroUserAdmin(admin.ModelAdmin):
         if obj is None:
             return fields_1 + ['password_repeated'] + fields_2 + fields_3
         else:
-            return fields_1 + fields_2 + ['date_joined'] + fields_3 + ['last_login']
+            return fields_1 + fields_2 + ['date_joined'] + fields_3 + ['last_login', 'user_permissions']
+
+    filter_horizontal = ('user_permissions',)
 
     def get_readonly_fields(self, request, obj):
         return ['date_joined', 'last_login', 'password'] if obj is not None else []
@@ -40,3 +43,4 @@ class AstroUserAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AstroUser, AstroUserAdmin)
+admin.site.register(Permission)

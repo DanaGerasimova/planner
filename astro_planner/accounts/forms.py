@@ -1,6 +1,31 @@
-
 from django import forms
+from django.contrib.auth.models import Permission
+from django.forms.widgets import CheckboxSelectMultiple
 from accounts.models import AstroUser
+
+
+class AstroUserPermissionsForm(forms.Form):
+    permissions = forms.MultipleChoiceField(
+        widget=CheckboxSelectMultiple,
+        required=False
+    )
+
+    def __init__(self, user=None, manager=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        self.manager = manager
+        all_permissions = Permission.objects.all()
+        self.fields['permissions'].choices = [
+            (permission.id, f'{permission.codename} | {permission.name}')
+            for permission in all_permissions
+        ]
+        if self.user:
+            permission_ids = list(
+                user.user_permissions.values_list('id', flat=True)
+            )
+            self.fields['permissions'].initial = permission_ids
+        if not self.manager.has_perm('accounts.manage_all_permissions'):
+            self.fields['permissions'].disabled = True
 
 
 class AstroUserForm(forms.ModelForm):
