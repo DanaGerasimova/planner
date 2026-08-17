@@ -16,7 +16,7 @@ class AstroUserPermissionsForm(forms.Form):
         self.manager = manager
         all_permissions = Permission.objects.all()
         self.fields['permissions'].choices = [
-            (permission.id, f'{permission.codename} | {permission.name}')
+            (permission.id, f'{permission.content_type} | {permission.codename} | {permission.name}')
             for permission in all_permissions
         ]
         if self.user:
