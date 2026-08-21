@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <a href="{% url 'all_forecast_preferences' %}">Back to Forecasts list</a>
+        <h3>Update Forecast</h3>
+        <form method="post" action="{% url 'forecast_preference_update' forecast_preference_id=forecast.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save</button>
+        </form>
+        <form method="post" action="{% url 'forecast_preference_delete' forecast_preference_id=forecast.id %}">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+    </body>
+</html>

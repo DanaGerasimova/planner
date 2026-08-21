@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <a href="{% url 'create_forecast_preference' %}">Create Forecast</a>
+        <table>
+            <tr>
+                <th>User</th>
+                <th>Sign</th>
+                <th>Category</th>
+                <th>Forecast Type</th>
+                <th>Forecast</th>
+            </tr>
+            {% for forecast in forecasts %}
+                <tr>
+                    <th align="left">{{ forecast.user.first_name }}</th>
+                    <th align="left">{{ forecast.sign }}</th>
+                    <th align="left">{{ forecast.category }}</th>
+                    <th align="left">{{ forecast.forecast_type }}</th>
+                    <th align="left"><a href="{% url 'forecast_preference_detail' forecast_preference_id=forecast.id%}">Go to</a></th>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">No forecast preferences found</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

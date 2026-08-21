@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.utils import timezone
+from common.choices import ZODIAC_CHOICES
 
 AVAILABLE_LANGS = [
     ('uk', 'Ukrainian'),
@@ -91,21 +92,6 @@ GENDER_TYPES = [
     ('N', 'Prefer not to say'),
     ('M', 'Male'),
     ('F', 'Female'),
-]
-ZODIAC_CHOICES = [
-    ('aries', 'Aries ♈'),
-    ('taurus', 'Taurus ♉'),
-    ('gemini', 'Gemini ♊'),
-    ('cancer', 'Cancer ♋'),
-    ('leo', 'Leo ♌'),
-    ('virgo', 'Virgo ♍'),
-    ('libra', 'Libra ♎'),
-    ('scorpio', 'Scorpio ♏'),
-    ('sagittarius', 'Sagittarius ♐'),
-    ('capricorn', 'Capricorn ♑'),
-    ('aquarius', 'Aquarius ♒'),
-    ('pisces', 'Pisces ♓'),
-    ('unknown', 'Not defined yet')
 ]
 
 

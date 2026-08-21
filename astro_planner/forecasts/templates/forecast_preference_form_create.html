@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <a href="{% url 'all_forecast_preferences' %}">Back to Forecasts list</a>
+        <h3>Create Forecast</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save</button>
+        </form>
+    </body>
+</html>
