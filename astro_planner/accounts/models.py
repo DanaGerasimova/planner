@@ -59,6 +59,27 @@ class AstroUser(AbstractBaseUser, PermissionsMixin):
     cell_phone = models.CharField('Cell phone', max_length=10, unique=True)
     email = models.EmailField('Email', unique=True)
     date_of_birth = models.DateField('Date of birth', null=True, blank=True)
+    time_of_birth = models.TimeField('Time of birth', null=True, blank=True)
+    longitude = models.DecimalField(
+        'Longitude',
+        max_digits=9,
+        decimal_places=6,
+        null=True,
+        blank=True
+    )
+    latitude = models.DecimalField(
+        'Latitude',
+        max_digits=9,
+        decimal_places=6,
+        null=True,
+        blank=True
+    )
+    iana_timezone = models.CharField(
+        'IANA timezone identifier',
+        max_length=38,
+        null=True,
+        blank=True
+    )
     first_name = models.CharField('First name', max_length=30, blank=True)
     last_name = models.CharField('Last name', max_length=50, blank=True)
     is_staff = models.BooleanField('Is staff', default=False)

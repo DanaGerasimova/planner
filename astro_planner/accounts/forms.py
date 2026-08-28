@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import Permission
 from django.forms.widgets import CheckboxSelectMultiple
 from accounts.models import AstroUser
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
 class AstroUserPermissionsForm(forms.Form):
@@ -46,6 +47,29 @@ class AstroUserForm(forms.ModelForm):
         if first_name and len(first_name) < 3:
             raise forms.ValidationError('Should be at least 3 chars long')
         return first_name
+
+    def clean_longitude(self):
+        longitude = self.cleaned_data['longitude']
+        if longitude is not None and not -180 <= longitude <= 180:
+            raise forms.ValidationError(
+                'Longitude must be between -180 and 180'
+            )
+        return longitude
+
+    def clean_latitude(self):
+        latitude = self.cleaned_data['latitude']
+        if latitude is not None and not -90 <= latitude <= 90:
+            raise forms.ValidationError('Latitude must be between -90 and 90')
+        return latitude
+
+    def clean_iana_timezone(self):
+        iana_timezone = self.cleaned_data['iana_timezone']
+        if iana_timezone:
+            try:
+                ZoneInfo(iana_timezone)
+            except ZoneInfoNotFoundError:
+                raise forms.ValidationError('Timezone must be valid')
+        return iana_timezone
 
     def clean(self):
         cleaned_data = super().clean()

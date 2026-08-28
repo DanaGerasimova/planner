@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <body>
+        <h2>{{ user.first_name }}: {{ user.astrouserprofile.get_sun_sign_display }}</h2>
         <a href="{% url 'create_forecast_preference' %}">Create Forecast</a>
         <table>
             <tr>
-                <th>User</th>
                 <th>Sign</th>
                 <th>Category</th>
                 <th>Forecast Type</th>
@@ -12,10 +12,9 @@
             </tr>
             {% for forecast in forecasts %}
                 <tr>
-                    <th align="left">{{ forecast.user.first_name }}</th>
-                    <th align="left">{{ forecast.sign }}</th>
-                    <th align="left">{{ forecast.category }}</th>
-                    <th align="left">{{ forecast.forecast_type }}</th>
+                    <th align="left">{{ forecast.get_sign_display }}</th>
+                    <th align="left">{{ forecast.get_category_display }}</th>
+                    <th align="left">{{ forecast.get_forecast_type_display }}</th>
                     <th align="left"><a href="{% url 'forecast_preference_detail' forecast_preference_id=forecast.id%}">Go to</a></th>
                 </tr>
             {% empty %}
