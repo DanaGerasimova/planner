@@ -5,7 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.utils import timezone
-from common.choices import ZODIAC_CHOICES
+from common.choices import ZODIAC_CHOICES, ZODIAC_CHOICES_VALUES
 
 AVAILABLE_LANGS = [
     ('uk', 'Ukrainian'),
@@ -143,6 +143,16 @@ class AstroUserProfile(models.Model):
     class Meta:
         verbose_name = 'UserProfile'
         verbose_name_plural = 'UserProfiles'
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(
+                    sun_sign__in=ZODIAC_CHOICES_VALUES,
+                    moon_sign__in=ZODIAC_CHOICES_VALUES,
+                    asc_sign__in=ZODIAC_CHOICES_VALUES
+                ),
+                name='valid_profile_zodiac_signs'
+            )
+        ]
 
     def __str__(self) -> str:
         return f'Profile for {self.user.cell_phone} \

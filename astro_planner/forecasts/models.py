@@ -1,18 +1,13 @@
 from django.db import models
 from accounts.models import AstroUser
-from common.choices import ZODIAC_CHOICES
-
-CATEGORIES = [
-    ('general', 'General'),
-    ('career', 'Career'),
-    ('relationships', 'Relationships'),
-    ('finance', 'Finance')
-]
-FORECAST_TYPE = [
-    ('daily', 'Daily'),
-    ('weekly', 'Weekly'),
-    ('monthly', 'Monthly')
-]
+from common.choices import (
+    ZODIAC_CHOICES,
+    CATEGORIES,
+    FORECAST_TYPE,
+    ZODIAC_CHOICES_VALUES,
+    CATEGORIES_VALUES,
+    FORECAST_TYPE_VALUES
+)
 
 
 class ForecastPreference(models.Model):
@@ -30,7 +25,7 @@ class ForecastPreference(models.Model):
     )
 
     def __str__(self) -> str:
-        return f'{self.forecast_type} forecast for {self.user}'
+        return f'{self.forecast_type} forecast for {self.user}: {self.get_sign_display()} about {self.category}'
 
     class Meta:
         verbose_name = 'Forecast Preference'
@@ -39,5 +34,23 @@ class ForecastPreference(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'sign', 'category', 'forecast_type'],
                 name='unique_user_sign_category_forecast_type'
+            ),
+            models.CheckConstraint(
+                condition=models.Q(
+                    sign__in=ZODIAC_CHOICES_VALUES
+                ),
+                name='valid_zodiac_signs'
+            ),
+            models.CheckConstraint(
+                condition=models.Q(
+                    category__in=CATEGORIES_VALUES
+                ),
+                name='valid_categories'
+            ),
+            models.CheckConstraint(
+                condition=models.Q(
+                    forecast_type__in=FORECAST_TYPE_VALUES
+                ),
+                name='valid_forecast_type'
             )
         ]
