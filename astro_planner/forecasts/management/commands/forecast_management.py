@@ -17,7 +17,7 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = f'Manage forecasts with subcommands {', '.join(ALLOWED_COMMANDS)}'
+    help = f"Manage forecasts with subcommands {', '.join(ALLOWED_COMMANDS)}"
 
     def add_arguments(self, parser):
         subparser = parser.add_subparsers(dest='subcommand', required=True)
@@ -36,8 +36,9 @@ class Command(BaseCommand):
             help='Category'
         )
         list_parser.add_argument(
-            '--type',
+            '--forecast-type',
             type=str,
+            dest='forecast_type',
             choices=FORECAST_TYPE_VALUES,
             help='Forecast type'
         )
@@ -75,8 +76,8 @@ class Command(BaseCommand):
         subcommand = options.get('subcommand')
 
         if subcommand not in ALLOWED_COMMANDS:
-            raise CommandError(f'Allowed only {', '.join(ALLOWED_COMMANDS)} \
-            commands')
+            raise CommandError(f"Allowed only {', '.join(ALLOWED_COMMANDS)} \
+            commands")
         
         if subcommand == LIST:
             self._handle_list(**options)
@@ -90,7 +91,7 @@ class Command(BaseCommand):
 
         user_id = options.get('user_id')
         category = options.get('category')
-        forecast_type = options.get('type')
+        forecast_type = options.get('forecast_type')
 
         if user_id:
             forecasts = forecasts.filter(user_id=user_id)
