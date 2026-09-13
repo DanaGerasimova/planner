@@ -4,29 +4,29 @@ from django.db import migrations
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
-global_content_type, _ = ContentType.objects.get_or_create(
-    app_label='accounts', model='global'
-)
+# global_content_type, _ = ContentType.objects.get_or_create(
+#     app_label='accounts', model='global'
+# )
 
 
-def create_custom_migrations(apps, schema_editor):
-    Permission.objects.create(
-        codename='manage_all_permissions',
-        name='Can manage permissions list',
-        content_type=global_content_type
-    )
-    Permission.objects.create(
-        codename='view_all_permissions',
-        name='Can view permissions list',
-        content_type=global_content_type
-    )
+# def create_custom_migrations(apps, schema_editor):
+#     Permission.objects.create(
+#         codename='manage_all_permissions',
+#         name='Can manage permissions list',
+#         content_type=global_content_type
+#     )
+#     Permission.objects.create(
+#         codename='view_all_permissions',
+#         name='Can view permissions list',
+#         content_type=global_content_type
+#     )
 
 
-def revert_custom_migrations(apps, schema_editor):
-    Permission.objects.filter(
-        content_type=global_content_type,
-        codename__in=['manage_all_permissions', 'view_all_permissions']
-    ).delete()
+# def revert_custom_migrations(apps, schema_editor):
+#     Permission.objects.filter(
+#         content_type=global_content_type,
+#         codename__in=['manage_all_permissions', 'view_all_permissions']
+#     ).delete()
 
 
 class Migration(migrations.Migration):
@@ -36,8 +36,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(
-            code=create_custom_migrations,
-            reverse_code=revert_custom_migrations
-        )
+        # migrations.RunPython(
+        #     code=create_custom_migrations,
+        #     reverse_code=revert_custom_migrations
+        # )
     ]
