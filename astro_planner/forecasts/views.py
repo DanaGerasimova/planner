@@ -12,6 +12,8 @@ from forecasts.forms import (
 )
 from forecasts.models import ForecastPreference
 from django.http import HttpResponseForbidden
+from forecasts.tasks import created_forecast_file, create_forecast_schedule
+from django_celery_beat.models import PeriodicTask
 
 
 class PermissionCheckMixin(PermissionRequiredMixin):
@@ -74,7 +76,10 @@ class ForcastPreferenceCreateView(PermissionCheckMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        created_forecast_file.delay(self.object.pk)
+        create_forecast_schedule(self.object)
+        return response
 
 
 class ForcastPreferenceUpdateView(
@@ -96,6 +101,12 @@ class ForcastPreferenceUpdateView(
         kwargs['user'] = self.request.user
         return kwargs
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        created_forecast_file.delay(self.object.pk)
+        create_forecast_schedule(self.object)
+        return response
+
 
 class ForcastPreferenceDeleteView(
     PermissionCheckMixin,
@@ -108,3 +119,7 @@ class ForcastPreferenceDeleteView(
     context_object_name = 'forecast'
 
     permission_required = 'forecasts.delete_forecastpreference'
+
+    def form_valid(self, form):
+        PeriodicTask.objects.filter(name=f'forecast_{self.object.pk}').delete()
+        return super().form_valid(form)

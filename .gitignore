@@ -4,3 +4,4 @@ __pycache__/
 db.sqlite3
 astro_planner/.env
 astro_planner/celerybeat-schedule
+astro_planner/media/

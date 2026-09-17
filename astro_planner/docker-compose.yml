@@ -1,10 +1,9 @@
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: ./Dockerfile
-    command: 
-      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
@@ -17,6 +16,41 @@ services:
     networks:
       - planner_ntwk
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - planner_ntwk
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: celery -A astro_planner beat --loglevel=INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    networks:
+      - planner_ntwk
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: celery -A astro_planner worker --loglevel=INFO
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    networks:
+      - planner_ntwk
+
   planner_db:
     image: postgres:16-alpine
     environment:
@@ -25,8 +59,10 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
+    volumes:
+      - planner_db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -36,3 +72,6 @@ services:
 networks:
   planner_ntwk:
     driver: bridge
+
+volumes:
+  planner_db_data:

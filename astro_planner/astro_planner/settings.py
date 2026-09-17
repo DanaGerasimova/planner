@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
-    'forecasts.apps.ForecastsConfig'
+    'forecasts.apps.ForecastsConfig',
+    "django_celery_beat"
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 AUTH_USER_MODEL = 'accounts.AstroUser'
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
