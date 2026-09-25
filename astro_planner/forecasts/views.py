@@ -11,7 +11,7 @@ from forecasts.forms import (
     ForecastPreferenceCreateForm, ForecastPreferenceUpdateForm
 )
 from forecasts.models import ForecastPreference
-from django.http import HttpResponseForbidden
+from django.http import FileResponse, Http404, HttpResponseForbidden
 from forecasts.tasks import created_forecast_file, create_forecast_schedule
 from django_celery_beat.models import PeriodicTask
 
@@ -59,6 +59,29 @@ class ForcastPreferenceDetailView(
             instance=self.object
         )
         return context
+
+
+class ForcastPreferenceDownloadDetailView(
+    PermissionCheckMixin,
+    OwnForecastQuerysetMixin,
+    DetailView
+):
+    model = ForecastPreference
+    pk_url_kwarg = 'forecast_preference_id'
+
+    permission_required = 'forecasts.view_forecastpreference'
+
+    def get(self, request, *args, **kwargs):
+        forecast = self.get_object()
+
+        if not forecast.forecast_file:
+            raise Http404('Forecast file does not exist')
+
+        return FileResponse(
+            forecast.forecast_file.open('rb'),
+            as_attachment=True,
+            filename=f'forecast_{forecast.id}.txt'
+        )
 
 
 class ForcastPreferenceCreateView(PermissionCheckMixin, CreateView):

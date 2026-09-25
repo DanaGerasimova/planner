@@ -12,5 +12,8 @@
             {% csrf_token %}
             <button type="submit">Delete</button>
         </form>
+        {% if forecast.forecast_file %}
+            <a href="{% url 'forecast_preference_download' forecast_preference_id=forecast.id %}">Download Forecast</a>
+        {% endif %}
     </body>
 </html>

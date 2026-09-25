@@ -6,7 +6,7 @@ from common.choices import ZODIAC_CHOICES
 class ForecastPreferenceForm(forms.ModelForm):
     class Meta:
         model = ForecastPreference
-        exclude = ['user']
+        exclude = ['user', 'forecast_file']
 
     def __init__(self, *args, **kwargs) -> None:
         self.user = kwargs.pop('user', None)

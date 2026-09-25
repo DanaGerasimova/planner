@@ -4,7 +4,8 @@ from forecasts.views import (
     ForcastPreferenceListView,
     ForcastPreferenceDetailView,
     ForcastPreferenceUpdateView,
-    ForcastPreferenceDeleteView
+    ForcastPreferenceDeleteView,
+    ForcastPreferenceDownloadDetailView
 )
 
 
@@ -33,5 +34,10 @@ urlpatterns = [
         '<int:forecast_preference_id>/delete/',
         ForcastPreferenceDeleteView.as_view(),
         name='forecast_preference_delete'
+    ),
+    path(
+        '<int:forecast_preference_id>/download/',
+        ForcastPreferenceDownloadDetailView.as_view(),
+        name='forecast_preference_download'
     ),
 ]

@@ -8,6 +8,7 @@ from common.choices import (
     CATEGORIES_VALUES,
     FORECAST_TYPE_VALUES
 )
+from django.core.files.storage import storages
 
 
 class ForecastPreference(models.Model):
@@ -22,6 +23,11 @@ class ForecastPreference(models.Model):
     )
     forecast_type = models.CharField(
         'Forecast Type', max_length=7, choices=FORECAST_TYPE, default='daily'
+    )
+    forecast_file = models.FileField(
+        upload_to='forecasts/',
+        storage=storages['default'],
+        blank=True
     )
 
     def __str__(self) -> str:

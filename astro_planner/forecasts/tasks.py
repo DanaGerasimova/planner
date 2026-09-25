@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 from django.utils import timezone
 from datetime import timedelta
+from django.core.files.base import ContentFile
 
 load_dotenv()
 
@@ -106,14 +107,14 @@ def created_forecast_file(forecast_id: int):
         return
 
     forecast_context = prepare_forecast_context(forecast)
-    output_path = os.path.join(
-        settings.MEDIA_ROOT,
-        'forecasts',
-        f'forecast_{forecast.id}.txt'
-    )
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    with open(output_path, 'w', encoding='utf-8') as forecast_file:
-        forecast_file.write(forecast_context)
+    file_name = f'forecast_{forecast.id}_{timezone.now().strftime(
+            '%Y-%m-%d_%H:%M'
+        )}.txt'
+
+    if forecast.forecast_file:
+        forecast.forecast_file.delete(save=False)
+
+    forecast.forecast_file.save(file_name, ContentFile(forecast_context))
 
 
 def prepare_forecast_report_context(forecast_data: QuerySet) -> list:
