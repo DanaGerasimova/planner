@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ka1g3xd73m^6_*ulx9b35f$tt$o7sqs$6h@87a_9za--jn-fgu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -137,6 +137,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 AUTH_USER_MODEL = 'accounts.AstroUser'
 
@@ -157,3 +158,8 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+# SSL settings
+CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['https://localhost']
+CSRF_COOKIE_SAMESITE = None

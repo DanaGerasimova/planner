@@ -6,3 +6,5 @@ astro_planner/.env
 astro_planner/celerybeat-schedule
 astro_planner/media/
 astro_planner/storage/
+astro_planner/certs/
+astro_planner/static/
